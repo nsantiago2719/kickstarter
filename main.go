@@ -1,19 +1,28 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
+	kickFlags := []cli.Flag{
+		&cli.StringFlag{
+			Name:    "config",
+			Usage:   "Load configuration from `FILE`",
+			Aliases: []string{"c"},
+			Value:   "starter.toml",
+		},
+	}
 	ks := &cli.App{
 		Name:  "kickstarter",
 		Usage: "run kickstarter kick to start configuring",
 		Commands: []*cli.Command{
 			{
 				Name:    "kick",
+				Flags:   kickFlags,
 				Aliases: []string{"k"},
 				Usage:   "run and initialize your dotfiles based in your config",
 				Action:  makeAction(handlerKick),
@@ -22,6 +31,6 @@ func main() {
 	}
 
 	if err := ks.Run(os.Args); err != nil {
-		log.Fatal(err)
+		fmt.Println("Error: ", err)
 	}
 }

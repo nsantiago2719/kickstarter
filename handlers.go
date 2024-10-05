@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/urfave/cli/v2"
@@ -16,8 +17,21 @@ func makeAction(f cli.ActionFunc) cli.ActionFunc {
 }
 
 func handlerKick(c *cli.Context) error {
-	arg := c.Args().First()
-	fmt.Println("kick config: ", arg)
+	if c.NArg() > 0 {
+		return errors.New("Command kick is not expecting arguments")
+	}
+	cfg, err := readToml(c.String("config"))
+	if err != nil {
+		return err
+	}
 
+	// Iterate thru all config declared
+	for k, v := range cfg.Config {
+		fmt.Println("name: ", k)
+		fmt.Println("source: ", v.Source)
+		fmt.Println("destination: ", v.Destination)
+		fmt.Println("description: ", v.Destination)
+		fmt.Print("\n")
+	}
 	return nil
 }
