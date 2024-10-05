@@ -28,11 +28,10 @@ func handlerKick(c *cli.Context) error {
 	// Iterate thru all config declared
 	for k, v := range cfg.Config {
 		fmt.Println("Configuring ", k)
-		fmt.Println(v.Description)
 
 		if err := copyConfig(v.Source, v.Destination); err != nil {
 			return err
 		}
 	}
-	return nil
+	return err
 }
