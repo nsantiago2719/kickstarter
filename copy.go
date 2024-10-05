@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 func copyConfig(src, d string) error {
@@ -15,12 +16,16 @@ func copyConfig(src, d string) error {
 		return err
 	}
 	if isSrcDir {
-		copyDir(source, destination)
-	} else {
-		fmt.Println("copying: ", source)
-		copyFile(source, destination)
+		return copyDir(source, destination)
 	}
-	return nil
+
+	// Create dir if destination folders if they dont exist
+	_, err = os.Stat(destination)
+	if os.IsNotExist(err) {
+		os.MkdirAll(filepath.Dir(destination), os.ModePerm)
+	}
+
+	return copyFile(source, destination)
 }
 
 func copyDir(_, _ string) error {
