@@ -20,15 +20,51 @@ func copyConfig(src, d string) error {
 	}
 
 	// Create dir if destination folders if they dont exist
-	_, err = os.Stat(destination)
-	if os.IsNotExist(err) {
-		os.MkdirAll(filepath.Dir(destination), os.ModePerm)
+	if !exists(destination) {
+		createDir(filepath.Dir(destination), os.ModePerm)
 	}
 
 	return copyFile(source, destination)
 }
 
-func copyDir(_, _ string) error {
+// Recursively copy the contents of the source directory and
+// create it in the destination directory
+func copyDir(src, dest string) error {
+	dirs, err := os.ReadDir(src)
+	if err != nil {
+		return err
+	}
+
+	for _, dir := range dirs {
+		srcPath := filepath.Join(src, dir.Name())
+		destPath := filepath.Join(dest, dir.Name())
+
+		srcInfo, err := os.Stat(srcPath)
+		if err != nil {
+			return err
+		}
+
+		switch srcInfo.Mode() & os.ModeType {
+		case os.ModeDir:
+			if err := createDir(destPath, 0755); err != nil {
+				return err
+			}
+			if err := copyDir(srcPath, destPath); err != nil {
+				return err
+			}
+		case os.ModeSymlink:
+			fmt.Errorf("Symlink is not currently supported")
+		default:
+			// Create dir if destination folders if they dont exist
+			if !exists(destPath) {
+				createDir(filepath.Dir(destPath), os.ModePerm)
+			}
+
+			if err := copyFile(srcPath, destPath); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -51,8 +87,9 @@ func copyFile(src, dest string) error {
 	// Create a file with permission 0644
 	// If create the file if it doesn't exist
 	// Overwrites if file is exists
-	destination, err := os.OpenFile(dest, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	destination, err := os.OpenFile(dest, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0644)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	defer destination.Close()
