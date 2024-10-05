@@ -2,6 +2,8 @@ package main
 
 import (
 	"os"
+	"os/user"
+	"path"
 
 	"github.com/pelletier/go-toml/v2"
 )
@@ -16,9 +18,9 @@ type Config struct {
 	Description string
 }
 
-func readToml(f string) (*TomlConfig, error) {
+func readToml(path string) (*TomlConfig, error) {
 	cfg := TomlConfig{}
-	file, err := os.ReadFile(f)
+	file, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -29,4 +31,16 @@ func readToml(f string) (*TomlConfig, error) {
 	}
 
 	return &cfg, nil
+}
+
+func readPath(p string) string {
+	cleanPath := path.Clean(p)
+
+	// check if tilde is the first character
+	// substitute it with current users HomeDir
+	if s := cleanPath[:1]; s == "~" {
+		usr, _ := user.Current()
+		return path.Join(usr.HomeDir, cleanPath[1:])
+	}
+	return cleanPath
 }
