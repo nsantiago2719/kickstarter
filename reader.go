@@ -2,14 +2,13 @@ package main
 
 import (
 	"os"
-	"os/user"
 	"path"
 
 	"github.com/pelletier/go-toml/v2"
 )
 
 type TomlConfig struct {
-	Config map[string]Config `toml:"config"`
+	Config map[string]Config `toml:"configs"`
 }
 
 type Config struct {
@@ -39,8 +38,7 @@ func readPath(p string) string {
 	// check if tilde is the first character
 	// substitute it with current users HomeDir
 	if s := cleanPath[:1]; s == "~" {
-		usr, _ := user.Current()
-		return path.Join(usr.HomeDir, cleanPath[1:])
+		return path.Join(usrHome, cleanPath[1:])
 	}
 	return cleanPath
 }

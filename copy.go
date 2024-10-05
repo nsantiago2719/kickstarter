@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 )
 
-func copyConfig(src, d string) error {
+func copyConfig(src, dest string) error {
 	source := readPath(src)
-	destination := readPath(d)
+	destination := readPath(dest)
 
 	isSrcDir, err := isDirectory(source)
 	if err != nil {
@@ -84,10 +84,10 @@ func copyFile(src, dest string) error {
 	}
 	defer source.Close()
 
-	// Create a file with permission 0644
+	// Create a file with permission os.ModePerm
 	// If create the file if it doesn't exist
 	// Overwrites if file is exists
-	destination, err := os.OpenFile(dest, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0644)
+	destination, err := os.OpenFile(dest, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return err
