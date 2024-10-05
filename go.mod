@@ -1,6 +1,6 @@
 module github.com/nsantiago2719/kickstarter
 
-go 1.22.5
+go 1.23.2
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
