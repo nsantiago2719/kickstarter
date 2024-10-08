@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -20,7 +21,7 @@ func copyConfig(src, dest string) error {
 	}
 
 	// Create dir if destination folders if they dont exist
-	if !exists(destination) {
+	if exist, err := exists(destination); !exist && err == nil {
 		createDir(filepath.Dir(destination), os.ModePerm)
 	}
 
@@ -56,7 +57,7 @@ func copyDir(src, dest string) error {
 			fmt.Errorf("Symlink is not currently supported")
 		default:
 			// Create dir if destination folders if they dont exist
-			if !exists(destPath) {
+			if exist, err := exists(destPath); !exist && err == nil {
 				createDir(filepath.Dir(destPath), os.ModePerm)
 			}
 
@@ -98,15 +99,21 @@ func copyFile(src, dest string) error {
 	return err
 }
 
-func exists(p string) bool {
-	if _, err := os.Stat(p); os.IsNotExist(err) {
-		return false
+func exists(p string) (bool, error) {
+	_, err := os.Stat(p)
+
+	if err == nil {
+		return true, nil
 	}
-	return true
+
+	if errors.Is(err, os.ErrNotExist) {
+		return false, nil
+	}
+	return true, nil
 }
 
 func createDir(p string, perm os.FileMode) error {
-	if exists(p) {
+	if exist, err := exists(p); !exist && err == nil {
 		return nil
 	}
 

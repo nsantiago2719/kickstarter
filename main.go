@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-	"path/filepath"
 
 	"github.com/urfave/cli/v2"
 )
 
 var (
-	usr, _    = user.Current()
-	usrHome   = usr.HomeDir
+	usr, _  = user.Current()
+	usrHome = usr.HomeDir
 )
 
 func main() {
