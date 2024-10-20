@@ -4,6 +4,33 @@ A tool inspired by many dotfile bootstrap  tools like (dotbot). Still work in pr
 # Why?
 Just wanted a single binary that I can use to bootstrap my whole dotfiles without the need of installing anything.
 
+# Sample Configuration
+
+How to setup TOML configurations
+```toml
+[configs.<config_name>]
+source = <source-of-the-config>
+destination = <destination-of-the-config>
+description = <description-what-is-the-config-is>
+
+```
+NOTES: 
+When giving a destination of a file, the last part of the path should be the filename.
+When specifying a directory to copy, the last folder specied is the folder where the files are going to be copied to.
+
+Sample configuration
+```toml
+[configs.zsh]
+source = ./.zshrc
+destination = ~/.zshrc
+description = "Copy zshrc config to home"
+
+[configs.nvim]
+source = ./nvim
+destination = ~/.config/nvim
+description = "Copy nvim configs to .config directory"
+```
+
 # License
 Copyright 2024 norman santiago
 
