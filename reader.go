@@ -12,9 +12,9 @@ type TomlConfig struct {
 }
 
 type Config struct {
-	Source      string
-	Destination string
-	Description string
+	Source      string `toml:"source"`
+	Destination string `toml:"destination"`
+	Description string `toml:"description"`
 }
 
 func readToml(path string) (*TomlConfig, error) {

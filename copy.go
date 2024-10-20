@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -16,16 +15,16 @@ func copyConfig(src, dest string) error {
 	if err != nil {
 		return err
 	}
-	if isSrcDir {
-		return copyDir(source, destination)
-	}
-
 	// Create dir if destination folders if they dont exist
-	if exist, err := exists(destination); !exist && err == nil {
-		createDir(filepath.Dir(destination), os.ModePerm)
+	destPath := filepath.Dir(destination)
+	createDir(destPath, os.ModePerm)
+
+	if isSrcDir {
+		copyDir(source, destination)
 	}
 
-	return copyFile(source, destination)
+	copyFile(source, destination)
+	return nil
 }
 
 // Recursively copy the contents of the source directory and
@@ -44,9 +43,9 @@ func copyDir(src, dest string) error {
 		if err != nil {
 			return err
 		}
-
 		switch srcInfo.Mode() & os.ModeType {
 		case os.ModeDir:
+
 			if err := createDir(destPath, 0755); err != nil {
 				return err
 			}
@@ -56,14 +55,11 @@ func copyDir(src, dest string) error {
 		case os.ModeSymlink:
 			fmt.Errorf("Symlink is not currently supported")
 		default:
+			dp := filepath.Dir(destPath)
 			// Create dir if destination folders if they dont exist
-			if exist, err := exists(destPath); !exist && err == nil {
-				createDir(filepath.Dir(destPath), os.ModePerm)
-			}
+			createDir(dp, os.ModePerm)
+			copyFile(srcPath, destPath)
 
-			if err := copyFile(srcPath, destPath); err != nil {
-				return err
-			}
 		}
 	}
 	return nil
@@ -90,7 +86,6 @@ func copyFile(src, dest string) error {
 	// Overwrites if file is exists
 	destination, err := os.OpenFile(dest, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 	defer destination.Close()
@@ -102,18 +97,15 @@ func copyFile(src, dest string) error {
 func exists(p string) (bool, error) {
 	_, err := os.Stat(p)
 
-	if err == nil {
+	if os.IsExist(err) {
 		return true, nil
 	}
 
-	if errors.Is(err, os.ErrNotExist) {
-		return false, nil
-	}
-	return true, nil
+	return false, nil
 }
 
 func createDir(p string, perm os.FileMode) error {
-	if exist, err := exists(p); !exist && err == nil {
+	if exist, err := exists(p); exist && err == nil {
 		return nil
 	}
 
