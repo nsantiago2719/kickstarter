@@ -1,3 +1,10 @@
+# Go parameters
+GOCMD = go
+GOTEST = $(GOCMD) test 
+
+# Coverage
+COVERAGE_REPORT = coverage.out
+COVERAGE_MODE = count
 
 build:
 	@go build -o bin/ks
