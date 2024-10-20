@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
 
@@ -33,4 +35,18 @@ func TestHandlerKick(t *testing.T) {
 	os.Args = []string{"kickstarter", "kick"}
 
 	_ = app.Run(os.Args)
+
+	filePaths := [4]string{
+		"/tmp/starter.toml",
+		"/tmp/config/sub-1/sub-1-1a",
+		"/tmp/config/sub-2/sub-2-1/sub-2-1a",
+		"/tmp/config/test",
+	}
+
+	for _, v := range filePaths {
+		_, err := os.Stat(v)
+		fmt.Println("Checking file: ", v)
+		fileExists := !os.IsNotExist(err)
+		assert.Equal(t, true, fileExists)
+	}
 }
