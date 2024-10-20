@@ -1,0 +1,8 @@
+[configs.sample]
+source = "./starter.toml"
+destination = "~/Downloads/config/starter.toml"
+
+[configs.sample_dir]
+source = "./tests"
+destination = "~/Downloads/config/"
+

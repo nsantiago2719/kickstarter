@@ -20,6 +20,7 @@ func handlerKick(c *cli.Context) error {
 	if c.NArg() > 0 {
 		return errors.New("Command kick is not expecting arguments")
 	}
+
 	cfg, err := readToml(c.String("config"))
 	if err != nil {
 		return err
@@ -28,7 +29,6 @@ func handlerKick(c *cli.Context) error {
 	// Iterate thru all config declared
 	for k, v := range cfg.Config {
 		fmt.Println("Configuring ", k)
-
 		if err := copyConfig(v.Source, v.Destination); err != nil {
 			return err
 		}
