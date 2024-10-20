@@ -9,25 +9,26 @@ Just wanted a single binary that I can use to bootstrap my whole dotfiles withou
 How to setup TOML configurations
 ```toml
 [configs.<config_name>]
-source = <source-of-the-config>
-destination = <destination-of-the-config>
-description = <description-what-is-the-config-is>
+source = "<source-of-the-config>"
+destination = "<destination-of-the-config>"
+description = "<description-what-is-the-config-is>"
 
 ```
 NOTES: 
 When giving a destination of a file, the last part of the path should be the filename.
 When specifying a directory to copy, the last folder specied is the folder where the files are going to be copied to.
+Tilde(~) will be transformed to the user's home directory
 
 Sample configuration
 ```toml
 [configs.zsh]
-source = ./.zshrc
-destination = ~/.zshrc
+source = "./.zshrc"
+destination = "~/.zshrc"
 description = "Copy zshrc config to home"
 
 [configs.nvim]
-source = ./nvim
-destination = ~/.config/nvim
+source = "./nvim"
+destination = "~/.config/nvim"
 description = "Copy nvim configs to .config directory"
 ```
 
