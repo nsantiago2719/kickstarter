@@ -20,11 +20,12 @@ func copyConfig(src, dest string) error {
 	createDir(destPath, os.ModePerm)
 
 	if isSrcDir {
-		copyDir(source, destination)
+		// return err or nil
+		return copyDir(source, destination)
 	}
 
-	copyFile(source, destination)
-	return nil
+	// return err or nil
+	return copyFile(source, destination)
 }
 
 // Recursively copy the contents of the source directory and
